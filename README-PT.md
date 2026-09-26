@@ -1,6 +1,7 @@
 # 🤖 SEO Helper
 
-![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
+[![CI](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml)
+![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
 
@@ -28,7 +29,7 @@ O gargalo era sempre o mesmo: a verificação manual. O processo era desanimador
 2.  Pressionar `Ctrl+U` para ver o código-fonte.
 3.  Procurar no HTML por uma única linha de código ou um texto específico.
 
-Com a identificação desses processos manuais, decidi criar o SEO Helper: um assistente de linha de comando para automatizar essas verificações e otimizar meu fluxo de trabalho. O que começou como um script para resolver um problema pontual evoluiu para uma ferramenta de CLI (Command-Line Interface) robusta e escalável, uma oportunidade de aplicar e aprofundar conceitos avançados de engenharia de software para resolver desafios reais. A arquitetura foi migrada para um design totalmente orientado a objetos, baseado no Command Pattern, onde cada funcionalidade é um componente autônomo e desacoplado. Isso torna a aplicação facilmente extensível — novos comandos podem ser adicionados sem qualquer alteração no núcleo do sistema. Para garantir a performance, foi implementado um motor de concorrência genérico e reutilizável, que orquestra tarefas em paralelo com um feedback claro ao utilizador através de uma interface interativa e guiada.
+Com a identificação desses processos manuais, decidi criar o SEO Helper: um assistente de linha de comando para automatizar essas verificações e otimizar meu fluxo de trabalho. O que começou como um script para resolver um problema pontual evoluiu para uma ferramenta de CLI (Command-Line Interface) robusta e escalável, uma oportunidade de aplicar e aprofundar conceitos avançados de engenharia de software para resolver desafios reais. A arquitetura foi migrada para um design totalmente orientado a objetos, baseado no Command Pattern, onde cada funcionalidade é um componente autônomo e desacoplado. Isso torna a aplicação fácil de estender: um comando novo é uma classe nova mais uma entrada no mapa de comandos, e o núcleo (classe base, crawler e camada de relatórios) continua intocado. Para garantir a performance, foi implementado um motor de concorrência genérico e reutilizável, que orquestra tarefas em paralelo com um feedback claro ao utilizador através de uma interface interativa e guiada.
 
 ## A Solução
 
@@ -42,13 +43,13 @@ A solução foi desenvolvida de forma modular, com cada comando sendo uma respos
 
 3. Para verificação de sitemaps: Foi introduzido o comando `sitemap-check`. Ele valida que todas as URLs críticas estão devidamente incluídas nos sitemaps XML, garantindo uma cobertura adequada para o rastreamento pelos motores de busca.
 
-O verdadeiro poder do SEO Helper, no entanto, está em sua arquitetura. Em vez de criar scripts isolados, optei por um design escalável baseado no Command Pattern. Isso significa que a aplicação está pronta para crescer: novas ferramentas de verificação podem ser adicionadas como novos "comandos" sem alterar a base do sistema, consolidando o SEO Helper como uma suíte de SEO progressivamente mais poderosa.
+O verdadeiro poder do SEO Helper, no entanto, está em sua arquitetura. Em vez de criar scripts isolados, optei por um design escalável baseado no Command Pattern. Isso significa que a aplicação está pronta para crescer: uma nova ferramenta de verificação chega como uma nova classe de comando, registrada no mapa de comandos, sem alterar o núcleo compartilhado que a executa. Isso consolida o SEO Helper como uma suíte de SEO progressivamente mais poderosa.
 
 ## Principais Funcionalidades
 
 A arquitetura desta ferramenta utiliza um conjunto de bibliotecas poderosas para alcançar um alto grau de desempenho e robustez.
 
-- **Arquitetura Escalável com Command Pattern:** O núcleo da aplicação utiliza o Command Pattern. Cada funcionalidade (`scan-metas`, `compare-metas`) é um objeto de comando desacoplado, registrado dinamicamente. Isso torna o sistema modular e fácil de estender: novos comandos podem ser adicionados sem alterar o código existente.
+- **Arquitetura Escalável com Command Pattern:** O núcleo da aplicação utiliza o Command Pattern. Cada funcionalidade (`scan-metas`, `compare-metas`, `sitemap-check`) é uma classe autônoma que herda de `BaseCommand` e é registrada no mapa de comandos do `CliApp` (`src/cli.py`). O parser de argumentos e o menu interativo são montados a partir desse mapa, então adicionar um comando é escrever a classe e acrescentar uma entrada: o núcleo não muda.
 - **Motor de Concorrência Genérico e Reutilizável:** A lógica de processamento paralelo com `ThreadPoolExecutor` e a barra de progresso visual (`tqdm`) foram abstraídas para uma classe base (`BaseCommand`). Qualquer novo comando herda automaticamente alta performance e feedback em tempo real para o usuário, promovendo a reutilização de código (DRY - Don't Repeat Yourself).
 - **Interface de Usuário Amigável e Guiada:** Para uma melhor experiência (UX), a ferramenta oferece um modo interativo (`questionary`) que guia o usuário passo a passo. Para operações diretas, uma barra de progresso (`tqdm`) informa o status em tempo real, combinando acessibilidade com feedback claro.
 - **Rede Otimizada e Eficiente:** Para minimizar a latência e o overhead de conexões, a aplicação utiliza um único objeto `requests.Session` que é compartilhado entre todas as threads. Isso permite a reutilização de conexões TCP (keep-alive), melhorando significativamente a performance em varreduras de grande volume.
@@ -126,7 +127,7 @@ Siga os passos abaixo para configurar e executar o projeto em sua máquina local
 
 **1. Pré-requisitos**
 
-- Python 3.10 ou superior
+- Python 3.11 ou superior
 
 **2. Configuração do Ambiente**
 
@@ -229,7 +230,7 @@ python main.py sitemap-check "samples/sample_urls_sitemap.xlsx" --sitemap-col "U
 
 A seleção de tecnologias para este projeto foi focada em performance, robustez e uma excelente experiência de usuário.
 
-- **Python 3.10+:** A linguagem principal, escolhida por seu ecossistema maduro e clareza. O uso de type hints foi priorizado para garantir um código mais seguro e de fácil manutenção.
+- **Python 3.11+:** A linguagem principal, escolhida por seu ecossistema maduro e clareza. O uso de type hints foi priorizado para garantir um código mais seguro e de fácil manutenção.
 - **Questionary:** Biblioteca fundamental para a criação da interface interativa. Permite construir prompts e menus complexos no terminal de forma simples e intuitiva, tornando a ferramenta acessível a todos.
 - **Requests & Beautiful Soup:** A dupla padrão da indústria para web scraping. `Requests` (com `requests.Session`) gerencia as conexões de rede de forma eficiente, enquanto `Beautiful Soup` faz o parsing do HTML mais complexo com facilidade e resiliência.
 - **Pandas & XlsxWriter:** Utilizados para a manipulação dos dados em memória e para a geração dos relatórios finais. `XlsxWriter` permite a criação de planilhas `.xlsx` com formatação profissional, como cores condicionais e filtros automáticos.
