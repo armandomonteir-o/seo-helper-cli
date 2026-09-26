@@ -2,7 +2,8 @@
 
 # 🤖 SEO Helper
 
-![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
+[![CI](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml)
+![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
 
@@ -30,7 +31,7 @@ The bottleneck was always the same: manual verification. The process was dauntin
 2.  Press `Ctrl+U` to view the source code.
 3.  Search the HTML for a single line of code or a specific text.
 
-By identifying these manual processes, I decided to create **SEO Helper**: a command-line assistant to automate these checks and optimize my workflow. What began as a script to solve a specific problem evolved into a robust and scalable CLI (Command-Line Interface) tool—an opportunity to apply and deepen advanced software engineering concepts to solve real-world challenges. The architecture was migrated to a fully object-oriented design based on the **Command Pattern**, where each feature is an autonomous and decoupled component. This makes the application easily extensible—new commands can be added without any changes to the core system. To ensure performance, a generic and reusable concurrency engine was implemented, orchestrating parallel tasks with clear user feedback through an interactive and guided interface.
+By identifying these manual processes, I decided to create **SEO Helper**: a command-line assistant to automate these checks and optimize my workflow. What began as a script to solve a specific problem evolved into a robust and scalable CLI (Command-Line Interface) tool, an opportunity to apply and deepen advanced software engineering concepts to solve real-world challenges. The architecture was migrated to a fully object-oriented design based on the **Command Pattern**, where each feature is an autonomous and decoupled component. This makes the application easy to extend: a new command is a new class plus one entry in the command registry, and the core (base command, crawler and reporting layers) stays untouched. To ensure performance, a generic and reusable concurrency engine was implemented, orchestrating parallel tasks with clear user feedback through an interactive and guided interface.
 
 ## The Solution
 
@@ -44,11 +45,11 @@ The solution was developed in a modular way, with each command being a direct an
 
 3.  **For sitemap verification**: The `sitemap-check` command was introduced. It validates that all critical URLs are properly included in XML sitemaps, ensuring proper search engine crawling coverage.
 
-The true power of SEO Helper, however, lies in its architecture. Instead of creating isolated scripts, I opted for a scalable design based on the **Command Pattern**. This means the application is ready to grow: new verification tools can be added as new "commands" without altering the system's core, establishing SEO Helper as an increasingly powerful SEO suite.
+The true power of SEO Helper, however, lies in its architecture. Instead of creating isolated scripts, I opted for a scalable design based on the **Command Pattern**. This means the application is ready to grow: a new verification tool arrives as a new command class, registered in the command map, with no change to the shared core that runs it. That establishes SEO Helper as an increasingly powerful SEO suite.
 
 ## Key Features
 
-- **Scalable Architecture with Command Pattern:** The application's core uses the Command Pattern. Each feature (`scan-metas`, `compare-metas`, `sitemap-check`) is a decoupled, dynamically registered command object. This makes the system modular and easy to extend: new commands can be added without altering the existing code.
+- **Scalable Architecture with Command Pattern:** The application's core uses the Command Pattern. Each feature (`scan-metas`, `compare-metas`, `sitemap-check`) is an autonomous class that inherits from `BaseCommand` and is registered in the command map held by `CliApp` (`src/cli.py`). Both the argument parser and the interactive menu are built from that map, so adding a command means writing its class and adding one entry: the core never changes.
 - **Generic and Reusable Concurrency Engine:** The parallel processing logic with `ThreadPoolExecutor` and the visual progress bar (`tqdm`) were abstracted into a base class (`BaseCommand`). Any new command automatically inherits high performance and real-time user feedback, promoting code reuse (DRY - Don't Repeat Yourself).
 - **User-Friendly and Guided Interface:** For a better user experience (UX), the tool offers an interactive mode (`questionary`) that guides the user step-by-step. For direct operations, a progress bar (`tqdm`) provides real-time status, combining accessibility with clear feedback.
 - **Optimized and Efficient Networking:** To minimize latency and connection overhead, the application uses a single `requests.Session` object shared across all threads. This allows for TCP connection reuse (keep-alive), significantly improving performance on large-volume scans.
@@ -126,7 +127,7 @@ Follow the steps below to set up and run the project on your local machine.
 
 **1. Prerequisites**
 
-- Python 3.10 or higher
+- Python 3.11 or higher
 
 **2. Environment Setup**
 
@@ -233,7 +234,7 @@ python main.py sitemap-check "samples/sample_urls_sitemap.xlsx" --sitemap-col "S
 
 The technology selection for this project focused on performance, robustness, and an excellent user experience.
 
-- **Python 3.10+**: The core language, chosen for its mature ecosystem and clarity. Type hints were prioritized to ensure safer and more maintainable code.
+- **Python 3.11+**: The core language, chosen for its mature ecosystem and clarity. Type hints were prioritized to ensure safer and more maintainable code.
 - **Questionary**: A key library for creating the interactive interface. It allows for building complex prompts and menus in the terminal simply and intuitively, making the tool accessible to everyone.
 - **Requests & Beautiful Soup**: The industry-standard duo for web scraping. `Requests` (with `requests.Session`) efficiently manages network connections, while `Beautiful Soup` parses even complex HTML with ease and resilience.
 - **Pandas & XlsxWriter**: Used for in-memory data manipulation and for generating the final reports. `XlsxWriter` enables the creation of professionally formatted `.xlsx` spreadsheets with features like conditional coloring and auto-filters.
