@@ -3,7 +3,7 @@
 [![CI](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml)
 ![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![Coverage gate](https://img.shields.io/badge/coverage%20gate-85%25-brightgreen.svg)
 
 **Uma ferramenta de linha de comando (CLI) de alto desempenho para automatizar auditorias técnicas de SEO.**
 
@@ -54,7 +54,7 @@ A arquitetura desta ferramenta utiliza um conjunto de bibliotecas poderosas para
 - **Interface de Usuário Amigável e Guiada:** Para uma melhor experiência (UX), a ferramenta oferece um modo interativo (`questionary`) que guia o usuário passo a passo. Para operações diretas, uma barra de progresso (`tqdm`) informa o status em tempo real, combinando acessibilidade com feedback claro.
 - **Rede Otimizada e Eficiente:** Para minimizar a latência e o overhead de conexões, a aplicação utiliza um único objeto `requests.Session` que é compartilhado entre todas as threads. Isso permite a reutilização de conexões TCP (keep-alive), melhorando significativamente a performance em varreduras de grande volume.
 - **Tratamento de Erros Robusto e Logging:** A aplicação foi construída com resiliência em mente. Falhas de rede ou erros de parsing em uma URL são capturados individualmente através de blocos `try...except`, registrados em um arquivo de log (`app.log`) para depuração, e não interrompem o processamento das demais URLs, garantindo que a tarefa seja concluída.
-- **Cobertura Abrangente de Testes:** O código-fonte mantém uma alta cobertura de testes (91%) através de testes unitários e de integração extensivos, garantindo confiabilidade e facilitando a adição de novas funcionalidades com segurança.
+- **Testado no CI:** os testes unitários e de integração rodam a cada push, e o build falha se a cobertura cair abaixo de 85% (`--cov-fail-under=85` em `.github/workflows/ci.yml`).
 
 ## Arquitetura
 
@@ -219,7 +219,7 @@ python main.py sitemap-check <caminho_para_arquivo.xlsx> [--sitemap-col SITEMAP_
 python main.py sitemap-check "samples/sample_urls_sitemap.xlsx"
 
 # Especificar nomes de colunas personalizados
-python main.py sitemap-check "samples/sample_urls_sitemap.xlsx" --sitemap-col "URL do Sitemap" --urls-col "URLs Esperadas"
+python main.py sitemap-check "minhas_urls.xlsx" --sitemap-col "URL do Sitemap" --urls-col "URLs Esperadas"
 ```
 
 **Nota:** O arquivo de entrada deve conter duas colunas:
@@ -240,7 +240,7 @@ A seleção de tecnologias para este projeto foi focada em performance, robustez
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
 
 ## Contribuidor
 
