@@ -5,7 +5,7 @@
 [![CI](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/armandomonteir-o/seo-helper-cli/actions/workflows/ci.yml)
 ![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![Coverage gate](https://img.shields.io/badge/coverage%20gate-85%25-brightgreen.svg)
 
 **A high-performance command-line (CLI) tool for automating technical SEO audits.**
 
@@ -54,7 +54,7 @@ The true power of SEO Helper, however, lies in its architecture. Instead of crea
 - **User-Friendly and Guided Interface:** For a better user experience (UX), the tool offers an interactive mode (`questionary`) that guides the user step-by-step. For direct operations, a progress bar (`tqdm`) provides real-time status, combining accessibility with clear feedback.
 - **Optimized and Efficient Networking:** To minimize latency and connection overhead, the application uses a single `requests.Session` object shared across all threads. This allows for TCP connection reuse (keep-alive), significantly improving performance on large-volume scans.
 - **Robust Error Handling and Logging:** The application was built with resilience in mind. Network failures or parsing errors on a single URL are caught individually via `try...except` blocks, logged to a file (`app.log`) for debugging, and do not interrupt the processing of other URLs, ensuring the task completes.
-- **Comprehensive Test Coverage:** The codebase maintains a high test coverage (91%) through extensive unit and integration tests, ensuring reliability and making it easier to add new features with confidence.
+- **Tested in CI:** unit and integration tests run on every push, and the build fails if coverage drops below 85% (`--cov-fail-under=85` in `.github/workflows/ci.yml`).
 
 ## Architecture
 
@@ -221,8 +221,8 @@ python main.py sitemap-check <path_to_file.xlsx> [--sitemap-col SITEMAP_COL] [--
 # Verify URLs using default column names
 python main.py sitemap-check "samples/sample_urls_sitemap.xlsx"
 
-# Specify custom column names
-python main.py sitemap-check "samples/sample_urls_sitemap.xlsx" --sitemap-col "Sitemap URL" --urls-col "Expected URLs"
+# Your own file, with other column names
+python main.py sitemap-check "my_urls.xlsx" --sitemap-col "Sitemap URL" --urls-col "Expected URLs"
 ```
 
 **Note:** The input file should contain two columns:
@@ -244,7 +244,7 @@ The technology selection for this project focused on performance, robustness, an
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
 
 ## Contributor
 
